@@ -1,10 +1,10 @@
 const int numMicrophones = 1;  // Adjust based on your setup
 const int sampleRate = 4000;   // Adjust based on your microphone specifications
-const int bufferSize = 512;    // Adjust based on your requirements
-const int micPin = A0;
+const int bufferSize = 256;    // Reduced buffer size
+const int micPin = A0;         // Adjust based on your setup
 
 unsigned long timestamps[numMicrophones];
-float microphoneData[numMicrophones][bufferSize];
+int microphoneData[numMicrophones][bufferSize];  // Use integers instead of floats to save memory
 
 void setup() {
   Serial.begin(9600);
@@ -18,8 +18,7 @@ void loop() {
   // Send timestamped sound data to the Raspberry Pi
   sendDataToRaspberryPi();
 
-  // If we don't need delay, we erase it
-  delay(10);  // Adjust delay based on your requirements
+  //delay(10);  // Adjust delay based on your requirements
 }
 
 void captureSoundData(int micIndex) {
@@ -29,8 +28,8 @@ void captureSoundData(int micIndex) {
   // microphoneData[micIndex][0] = analogRead(micPin);
 
   // Placeholder: Use a simple sine wave for demonstration
-  float frequency = 1000;  // Adjust frequency based on your requirements
-  float amplitude = 100.0; // Adjust amplitude based on your requirements
+  //float frequency = 1000;  // Adjust frequency based on your requirements
+  //int amplitude = 100;    // Adjust amplitude based on your requirements
   for (int i = 0; i < bufferSize; i++) {
     float t = (float)i / sampleRate;
     microphoneData[micIndex][i] = analogRead(micPin);
@@ -48,7 +47,7 @@ void sendDataToRaspberryPi() {
     
     // Send raw data
     for (int j = 0; j < bufferSize; j++) {
-      Serial.print(microphoneData[i][j], 6);  // 6 decimal places for float
+      Serial.print(microphoneData[i][j]);
       if (j < bufferSize - 1) {
         Serial.print(",");
       }

@@ -1,7 +1,6 @@
 const int numMicrophones = 1;  // Adjust based on your setup
 const int sampleRate = 4000;   // Adjust based on your microphone specifications
 const int bufferSize = 512;    // Adjust based on your requirements
-const int micPin = A0;
 
 unsigned long timestamps[numMicrophones];
 float microphoneData[numMicrophones][bufferSize];
@@ -33,8 +32,7 @@ void captureSoundData(int micIndex) {
   float amplitude = 100.0; // Adjust amplitude based on your requirements
   for (int i = 0; i < bufferSize; i++) {
     float t = (float)i / sampleRate;
-    microphoneData[micIndex][i] = analogRead(micPin);
-    //microphoneData[micIndex][i] = amplitude * sin(2 * PI * frequency * t);
+    microphoneData[micIndex][i] = amplitude * sin(2 * PI * frequency * t);
   }
 }
 
