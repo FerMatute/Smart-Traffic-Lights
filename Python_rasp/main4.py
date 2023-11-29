@@ -1,82 +1,52 @@
 import numpy as np
 import serial
 import matplotlib.pyplot as plt
-from numpy.fft import fft, ifft, fftshift
-import librosa
-import librosa.display
+#from numpy.fft import fft, ifft, fftshift
 from scipy.signal import correlate
+import librosa
 import os
+import librosa.display
+
 
 plots = lambda rows = 1, cols = 1, size = (20, 10): plt.subplots(rows, cols, figsize = size)
-ser = serial.Serial('COM11', 115200, timeout=0)
+ser = serial.Serial('COM11', 9600, timeout=1)
 
 SAMPLE = 'sample.wav'
-fs = 48000
+
+fs = 4000
 ts = 1/fs
 total_samples = fs*1
 n = np.arange(total_samples)
-audio_sample, sr = librosa.load(SAMPLE, sr=48000)
 
 tiempo = np.arange(total_samples)
 datos = np.arange(total_samples)
 
-def plot_waves(waves, sr, start = None, signal_len = None, title = None):
-  rows = len(waves)
-
-  # Busca el máximo de cada uno de los arreglos, para después buscar el máximo
-  # entre todos los arreglos
-  max_y = np.amax([np.amax(wave) for wave in waves])
-
-  _, ax1 = plots(rows)
-  ax1 = ax1.flatten()
-
-  for i, wave in enumerate(waves):
-    librosa.display.waveshow(wave, sr = sr, ax = ax1[i])
-    ax1[i].set_title(title[i], fontsize = 16, fontweight = 'bold')
-    ax1[i].set_ylim(-max_y, max_y)
-    ax1[i].set_xlim(0, 50)
-
-    if start:
-      ax1[i].axvline(start[i]/sr, color = 'r', linestyle = '--')
-      ax1[i].axvline(start[i]/sr + signal_len/sr, color = 'g', linestyle = '--')
-
-
-  plt.tight_layout()
-  plt.show()
-
 for i in range(total_samples):
-    while True:
-        try:
-            dato = int(((ser.readline()).decode()).strip())
-            print("Ya salí")
-            break     
-        except ValueError:
-            dato = 0
-            print("sigo aquí :)")
+    dato = ((ser.readline()).decode()).strip()
+    try:
+        dato = int(dato)
+    except ValueError:
+        if i == 0:
+            dato = 0.16
+        else:
+            try:
+                dato = int(datos[i - 1])
+            except ValueError:
+                dato = 0.16
 
+    #dato_int = int(float(dato))
+    #print(dato_int)
     datos[i] = dato
 
 ser.close()
 
-plot_waves([datos, audio_sample], sr,
-           title = ['SIGNAL MICRO 1', 'SIGNAL SAMPLE'])
 
-"""
+#"""
 _, ax = plots()
 ax.plot(n*ts, datos, 'o',label = 'Wacha perro3')
 ax.legend()
 plt.show()
-"""
-
-def find_yes(signal, target_signal):
-  corr = correlate(signal, target_signal, mode = 'full')
-  start_pos = np.argmax(corr) - len(target_signal) + 1
-  return corr, start_pos
-
-corr_ambulancia, start_motor = find_yes(datos, audio_sample)
-
-plot_waves(corr_ambulancia, sr,
-           title = 'Correlacion')
+#"""
 
 # Create the array that would contain only our positive frequency data
 #Final = []
