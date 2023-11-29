@@ -72,7 +72,7 @@ while True:
 
                 datos_mic3[i] = dato
 
-                while identifier != "D" or dato > 1023:
+                while identifier != "D" or dato > 1023 or dato < 50:
                     raw_data = ((ser.readline()).decode()).strip()
                     identifier = raw_data[0]
                     dato = int(raw_data[1:])
@@ -83,23 +83,23 @@ while True:
                 break     
             except ValueError:
                 #print("No toy juera")
-                dato = 0
+                dato = 130
 
             except IndexError:
                 #print("No toy juera")
-                dato = 0
+                dato = 130
 
         #datos[i] = dato
 
 
 
-    _, ax = plots()
-    ax.plot(n*ts, datos_mic1, 'o',label = 'Wacha perro1')
-    ax.plot(n*ts, datos_mic2, 'o',label = 'Wacha perro2')
-    ax.plot(n*ts, datos_mic3, 'o',label = 'Wacha perro3')
-    ax.plot(n*ts, datos_mic4, 'o',label = 'Wacha perro3')
-    ax.legend()
-    plt.show()
+    # _, ax = plots()
+    # ax.plot(n*ts, datos_mic1, 'o',label = 'Wacha perro1')
+    # ax.plot(n*ts, datos_mic2, 'o',label = 'Wacha perro2')
+    # ax.plot(n*ts, datos_mic3, 'o',label = 'Wacha perro3')
+    # ax.plot(n*ts, datos_mic4, 'o',label = 'Wacha perro4')
+    # ax.legend()
+    # plt.show()
 
     # Datos Mic 1
     Final1 = np.arange(total_samples / 2)
@@ -160,7 +160,7 @@ while True:
 
     Final3[0] = 0
 
-    # Datos Mic 2
+    # Datos Mic 4
 
     Final4 = np.arange(total_samples / 2)
     Y4 = np.arange(total_samples)
@@ -180,18 +180,18 @@ while True:
 
     Final4[0] = 0
 
-    _,ax3 = plots()
-    ax3.plot(freqs, Final1, 'ro', label = 'Wacha pt. 1')
-    ax3.plot(freqs, Final2, 'go', label = 'Wacha pt. 2')
-    ax3.plot(freqs, Final3, 'bo', label = 'Wacha pt. 3')
-    ax3.plot(freqs, Final4, 'mo', label = 'Wacha pt. 4')
-    ax3.legend()
-    plt.show()
+    # _,ax3 = plots()
+    # ax3.plot(freqs, Final1, 'ro', label = 'Wacha pt. 1')
+    # ax3.plot(freqs, Final2, 'go', label = 'Wacha pt. 2')
+    # ax3.plot(freqs, Final3, 'bo', label = 'Wacha pt. 3')
+    # ax3.plot(freqs, Final4, 'mo', label = 'Wacha pt. 4')
+    # ax3.legend()
+    # plt.show()
 
     Ambulancia1 = Final1[1249:1999]
     Ambulancia2 = Final2[1249:1999]
     Ambulancia3 = Final3[1249:1999]
-    Ambulancia4 = Final3[1249:1999]
+    Ambulancia4 = Final4[1249:1999]
     
     print("--------------------")
 
@@ -200,7 +200,7 @@ while True:
 
     final = np.argmax(maxi) + 1
     print(flag)
-    #print('The microphone with the biggest presence of the sample, is the microphone no. %2d' %final)
+    print('The microphone with the biggest presence of the sample, is the microphone no. %2d' %final)
 
     print("<<<<<<<<<<<<<<<<<<<<<")
 
@@ -212,58 +212,85 @@ while True:
             else:
                 topic = "esp32/alarm" + str(final + 1)
             
-            publish.single(topic, "on", hostname = "192.168.1.68", port=1883,keepalive=60)
+            print(topic)
+            publish.single(topic, "on", hostname = "192.168.137.1", port=1883,keepalive=60)
 
             print('The traffic light no. %2d is now in green' %final)
             tempMax = final - 1
             flag = True
         else:
+            msgs = [("esp32/alarm1","off"),("esp32/alarm","off"),("esp32/alarm","off"),("esp32/alarm","off")]
+            publish.multiple(msgs,hostname="192.168.137.1",port=1883,keepalive=60)
             flag = False
 
 
     elif flag == True:
         # The case for the 2nd traffic light
+        if maxi[tempMax] > 750:
+            if final == 4:
+                topic = "esp32/alarm1"
+            else:
+                topic = "esp32/alarm" + str(final + 1)
+            
+            publish.single(topic, "on", hostname = "192.168.137.1", port=1883,keepalive=60)
         maxi[tempMax] = 0
         final = np.argmax(maxi) + 1
         if second == 0 and maxi[final - 1] > 750:
-            publish.single(topic, "off", hostname = "192.168.1.68", port=1883,keepalive=60)
+            publish.single(topic, "off", hostname = "192.168.137.1", port=1883,keepalive=60)
+            print(topic)
             topic = "esp32/alarm" + str(final)
-            publish.single(topic, "on", hostname = "192.168.1.68", port=1883,keepalive=60)
+            publish.single(topic, "on", hostname = "192.168.137.1", port=1883,keepalive=60)
             print('The traffic light no. %2d is now in green' %final)
             second = final - 1
 
         elif second == 0 and maxi[final - 1] <= 750:
+            time.sleep(2)
             msgs = [("esp32/alarm1","off"),("esp32/alarm","off"),("esp32/alarm","off"),("esp32/alarm","off")]
-            publish.multiple(msgs,hostname="192.168.1.68",port=1883,keepalive=60)
+            publish.multiple(msgs,hostname="192.168.137.1",port=1883,keepalive=60)
             flag = False
             tempMax = 0
 
         elif second != 0:
             # The case for the 3rd traffic light
+            if maxi[second] > 750:
+                if final == 4:
+                    topic = "esp32/alarm1"
+                else:
+                    topic = "esp32/alarm" + str(final + 1)
+                    publish.single(topic, "on", hostname = "192.168.137.1", port=1883,keepalive=60)
+        
             maxi[second] = 0
             final = np.argmax(maxi) + 1
             if third == 0 and maxi[final - 1] > 750:
-                publish.single(topic, "off", hostname = "192.168.1.68", port=1883,keepalive=60)
+                publish.single(topic, "off", hostname = "192.168.137.1", port=1883,keepalive=60)
                 topic = "esp32/alarm" + str(final)
-                publish.single(topic, "on", hostname = "192.168.1.68", port=1883,keepalive=60)
+                publish.single(topic, "on", hostname = "192.168.137.1", port=1883,keepalive=60)
                 print('The traffic light no. %2d is now in green' %final)
                 third = final - 1
 
             elif third == 0 and maxi[final - 1] <= 750:
+                time.sleep(2)
                 msgs = [("esp32/alarm1","off"),("esp32/alarm","off"),("esp32/alarm","off"),("esp32/alarm","off")]
-                publish.multiple(msgs,hostname="192.168.1.68",port=1883,keepalive=60)
+                publish.multiple(msgs,hostname="192.168.137.1",port=1883,keepalive=60)
                 flag = False
                 tempMax = 0
                 second = 0
             
             elif third != 0:
                 # The case of the 4th traffic light
+                if maxi[third] > 750:
+                    if final == 4:
+                        topic = "esp32/alarm1"
+                    else:
+                        topic = "esp32/alarm" + str(final + 1)
+                        publish.single(topic, "on", hostname = "192.168.137.1", port=1883,keepalive=60)
+
                 maxi[third] = 0
                 final = np.argmax(maxi) + 1
                 if maxi[final - 1] > 750:
-                    publish.single(topic, "off", hostname = "192.168.1.68", port=1883,keepalive=60)
+                    publish.single(topic, "off", hostname = "192.168.137.1", port=1883,keepalive=60)
                     topic = "esp32/alarm" + str(final)
-                    publish.single(topic, "on", hostname = "192.168.1.68", port=1883,keepalive=60)
+                    publish.single(topic, "on", hostname = "192.168.137.1", port=1883,keepalive=60)
                     print('The traffic light no. %2d is now in green' %final)
                     flag = False
                     tempMax = 0
@@ -271,11 +298,12 @@ while True:
                     third = 0
                     time.sleep(2)
                     msgs = [("esp32/alarm1","off"),("esp32/alarm","off"),("esp32/alarm","off"),("esp32/alarm","off")]
-                    publish.multiple(msgs,hostname="192.168.1.68",port=1883,keepalive=60)
+                    publish.multiple(msgs,hostname="192.168.137.1",port=1883,keepalive=60)
 
                 else:
+                    time.sleep(2)
                     msgs = [("esp32/alarm1","off"),("esp32/alarm","off"),("esp32/alarm","off"),("esp32/alarm","off")]
-                    publish.multiple(msgs,hostname="192.168.1.68",port=1883,keepalive=60)
+                    publish.multiple(msgs,hostname="192.168.137.1",port=1883,keepalive=60)
                     flag = False
                     tempMax = 0
                     second = 0
@@ -283,8 +311,8 @@ while True:
 
     #time.sleep(2)
 
-    mj+=1
-    if mj == 8:
-        break
+    # mj+=1
+    # if mj == 8:
+    #     break
 
 ser.close()

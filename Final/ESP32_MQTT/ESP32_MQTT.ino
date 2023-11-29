@@ -35,16 +35,12 @@ void setup() {
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
-  pinMode(sw1, INPUT_PULLUP);
   pinMode(green1, OUTPUT);
   pinMode(red1, OUTPUT);
-  pinMode(sw2, INPUT_PULLUP);
   pinMode(green2, OUTPUT);
   pinMode(red2, OUTPUT);
-  pinMode(sw3, INPUT_PULLUP);
   pinMode(green3, OUTPUT);
   pinMode(red3, OUTPUT);
-  pinMode(sw4, INPUT_PULLUP);
   pinMode(green4, OUTPUT);
   pinMode(red4, OUTPUT);
 }
