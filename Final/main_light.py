@@ -22,14 +22,14 @@ def on_message(client, userdata, msg):
             print(flag)
             flag = True
             msgs = [("esp32/green1","on"),("esp32/green2","off"),("esp32/green3","off"),("esp32/green4","off")]
-            publish.multiple(msgs,hostname="192.168.1.9",port=1883,keepalive=60)
+            publish.multiple(msgs,hostname="192.168.1.68",port=1883,keepalive=60)
         elif str(msg.payload) == "b'off'":
             flag = False
 
     elif msg.topic == "esp32/alarm2":
         if str(msg.payload) == "b'on'":
             msgs = [("esp32/green1","off"),("esp32/green2","on"),("esp32/green3","off"),("esp32/green4","off")]
-            publish.multiple(msgs,hostname="192.168.1.9",port=1883,keepalive=60)
+            publish.multiple(msgs,hostname="192.168.1.68",port=1883,keepalive=60)
             flag = True    
         elif str(msg.payload) == "b'off'":
             flag = False
@@ -37,7 +37,7 @@ def on_message(client, userdata, msg):
     elif msg.topic == "esp32/alarm3":
         if str(msg.payload) == "b'on'":
             msgs = [("esp32/green1","off"),("esp32/green2","off"),("esp32/green3","on"),("esp32/green4","off")]
-            publish.multiple(msgs,hostname="192.168.1.9",port=1883,keepalive=60)
+            publish.multiple(msgs,hostname="192.168.1.68",port=1883,keepalive=60)
             flag = True    
         elif str(msg.payload) == "b'off'":
             flag = False
@@ -45,7 +45,7 @@ def on_message(client, userdata, msg):
     elif msg.topic == "esp32/alarm4":
         if str(msg.payload) == "b'on'":
             msgs = [("esp32/green1","off"),("esp32/green2","off"),("esp32/green3","off"),("esp32/green4","on")]
-            publish.multiple(msgs,hostname="192.168.1.9",port=1883,keepalive=60)
+            publish.multiple(msgs,hostname="192.168.1.68",port=1883,keepalive=60)
             flag = True    
         elif str(msg.payload) == "b'off'":
             flag = False
@@ -56,7 +56,7 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("192.168.1.9", 1883, 60)
+client.connect("192.168.1.68", 1883, 60)
 
 
 client.loop_start()
@@ -65,28 +65,28 @@ while True:
     #print(flag)
     while flag == False:
         msg = [("esp32/green1","on"),("esp32/green2","off"),("esp32/green3","off"),("esp32/green4","off")]
-        publish.multiple(msg,hostname="192.168.1.9",port=1883,keepalive=60)
+        publish.multiple(msg,hostname="192.168.1.68",port=1883,keepalive=60)
         time.sleep(.5)
 
         if flag != False:
             break
 
         msg = [("esp32/green1","off"),("esp32/green2","on"),("esp32/green3","off"),("esp32/green4","off")]
-        publish.multiple(msg,hostname="192.168.1.9",port=1883,keepalive=60)
+        publish.multiple(msg,hostname="192.168.1.68",port=1883,keepalive=60)
         time.sleep(.5)
         
         if flag != False:
             break
 
         msg = [("esp32/green1","off"),("esp32/green2","off"),("esp32/green3","on"),("esp32/green4","off")]
-        publish.multiple(msg,hostname="192.168.1.9",port=1883,keepalive=60)
+        publish.multiple(msg,hostname="192.168.1.68",port=1883,keepalive=60)
         time.sleep(.5)
         
         if flag != False:
             break
 
         msg = [("esp32/green1","off"),("esp32/green2","off"),("esp32/green3","off"),("esp32/green4","on")]
-        publish.multiple(msg,hostname="192.168.1.9",port=1883,keepalive=60)
+        publish.multiple(msg,hostname="192.168.1.68",port=1883,keepalive=60)
         time.sleep(.5)
         
         if flag != False:
