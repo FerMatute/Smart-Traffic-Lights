@@ -233,6 +233,7 @@ while True:
                 topic = "esp32/alarm" + str(final + 1)
             
             publish.single(topic, "on", hostname = "192.168.137.1", port=1883,keepalive=60)
+        
         maxi[tempMax] = 0
         final = np.argmax(maxi) + 1
         if second == 0 and maxi[final - 1] > 750:
