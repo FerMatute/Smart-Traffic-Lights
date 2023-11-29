@@ -13,7 +13,7 @@ import paho.mqtt.publish as publish
 
 # Una función lambda es una función anónima
 plots = lambda rows = 1, cols = 1, size = (20, 10): plt.subplots(rows, cols, figsize = size)
-ser = serial.Serial('COM9', 115200, timeout=0)
+ser = serial.Serial('COM11', 115200, timeout=0)
 
 
 fs = 4000
@@ -199,6 +199,7 @@ while True:
         maxi[i] = array.max()
 
     final = np.argmax(maxi) + 1
+    print(flag)
     #print('The microphone with the biggest presence of the sample, is the microphone no. %2d' %final)
 
     print("<<<<<<<<<<<<<<<<<<<<<")
