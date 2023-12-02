@@ -8,7 +8,7 @@ const char* ssid = "steren_2_4G";
 const char* password = "password";
 
 // Add mosquitto MQTT Broker IP address
-const char* mqtt_server = "192.168.1.7";
+const char* mqtt_server = "192.168.1.5";
 
 //Define constants and variables for use
 WiFiClient espClient;

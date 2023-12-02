@@ -93,13 +93,13 @@ while True:
 
 
 
-    # _, ax = plots()
-    # ax.plot(n*ts, datos_mic1, 'o',label = 'Wacha perro1')
-    # ax.plot(n*ts, datos_mic2, 'o',label = 'Wacha perro2')
-    # ax.plot(n*ts, datos_mic3, 'o',label = 'Wacha perro3')
-    # ax.plot(n*ts, datos_mic4, 'o',label = 'Wacha perro4')
-    # ax.legend()
-    # plt.show()
+    _, ax = plots()
+    ax.plot(n*ts, datos_mic1, 'o',label = 'Wacha perro1')
+    ax.plot(n*ts, datos_mic2, 'o',label = 'Wacha perro2')
+    ax.plot(n*ts, datos_mic3, 'o',label = 'Wacha perro3')
+    ax.plot(n*ts, datos_mic4, 'o',label = 'Wacha perro4')
+    ax.legend()
+    plt.show()
 
     # Datos Mic 1
     Final1 = np.arange(total_samples / 2)
@@ -180,13 +180,13 @@ while True:
 
     Final4[0] = 0
 
-    # _,ax3 = plots()
-    # ax3.plot(freqs, Final1, 'ro', label = 'Wacha pt. 1')
-    # ax3.plot(freqs, Final2, 'go', label = 'Wacha pt. 2')
-    # ax3.plot(freqs, Final3, 'bo', label = 'Wacha pt. 3')
-    # ax3.plot(freqs, Final4, 'mo', label = 'Wacha pt. 4')
-    # ax3.legend()
-    # plt.show()
+    _,ax3 = plots()
+    ax3.plot(freqs, Final1, 'ro', label = 'Wacha pt. 1')
+    ax3.plot(freqs, Final2, 'go', label = 'Wacha pt. 2')
+    ax3.plot(freqs, Final3, 'bo', label = 'Wacha pt. 3')
+    ax3.plot(freqs, Final4, 'mo', label = 'Wacha pt. 4')
+    ax3.legend()
+    plt.show()
 
     Ambulancia1 = Final1[1249:1999]
     Ambulancia2 = Final2[1249:1999]
